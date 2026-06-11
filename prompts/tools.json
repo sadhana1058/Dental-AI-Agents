@@ -1,0 +1,95 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "check_availability",
+      "description": "Returns available 30-minute appointment slots for a given date. Call this when the patient wants to know what times are open, or before proposing a specific reschedule time.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date to check in YYYY-MM-DD format (e.g. '2026-06-20')."
+          },
+          "provider": {
+            "type": "string",
+            "description": "Optional provider name to filter by (e.g. 'Dr. Patel'). Omit to show availability across all providers."
+          }
+        },
+        "required": ["date"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_appointment",
+      "description": "Retrieves the current patient's upcoming scheduled appointments. Call this at the start of any scheduling conversation, or when the patient asks what appointment they have.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "patient_id": {
+            "type": "integer",
+            "description": "The patient ID from the patient context."
+          }
+        },
+        "required": ["patient_id"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "reschedule_appointment",
+      "description": "Moves an existing scheduled appointment to a new date and time. Only call this AFTER the patient has verbally confirmed the new time. The new_time should come from a slot returned by check_availability.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "appointment_id": {
+            "type": "integer",
+            "description": "ID of the appointment to reschedule (from get_appointment)."
+          },
+          "new_time": {
+            "type": "string",
+            "description": "New appointment start time in ISO 8601 format (e.g. '2026-06-20T10:00:00')."
+          }
+        },
+        "required": ["appointment_id", "new_time"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "cancel_appointment",
+      "description": "Cancels an existing scheduled appointment. Only call this AFTER the patient explicitly confirms they want to cancel. Do not call proactively.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "appointment_id": {
+            "type": "integer",
+            "description": "ID of the appointment to cancel (from get_appointment)."
+          }
+        },
+        "required": ["appointment_id"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "escalate_to_human",
+      "description": "Ends the AI session and transfers the patient to a human staff member. Use when: the patient is upset or frustrated, the request is outside your capabilities, intent remains unclear after one clarifying question, or the patient asks to speak with a person.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Brief reason for escalation — logged for staff context (e.g. 'patient asking about billing', 'unclear intent after two turns')."
+          }
+        },
+        "required": ["reason"]
+      }
+    }
+  }
+]
